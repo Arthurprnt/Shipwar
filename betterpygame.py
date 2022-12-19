@@ -2,7 +2,8 @@ import pygame
 
 class Pygameimage():
 
-    def __init__(self, image):
+    def __init__(self, name, image):
+        self.name = name
         self.image = pygame.image.load(image)
         self.size = self.image.get_size()
         self.position = [0, 0]
@@ -65,6 +66,9 @@ def colide(image, mouse):
 def pixelinhd(length, screen):
     return length*screen/2560
 
+def multiplypixelinhd(ratio, length, screen):
+    return round(length*ratio*screen/2560)
+
 def isclickable(liste):
     for i in liste:
         if i.clicked:
@@ -79,3 +83,9 @@ def findclicked(liste):
 
 def roundat(x, at):
     return at*round(x/at)
+
+def showtext(screen, texte, font, xcoord, ycoord, color):
+    text_shown = font.render(texte, True, color)
+    text_rect = text_shown.get_rect()
+    text_rect.center = (xcoord, ycoord)
+    screen.blit(text_shown, text_rect)
