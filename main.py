@@ -49,6 +49,11 @@ SHIP_FOUR = Pygameimage("4x1", "assets/4x1.png")
 SHIP_FOUR.multiplesize(1.5, X)
 SHIP_FOUR.set_defaultpos(pixelinhd(334.7, X), pixelinhd(607, X))
 
+EMPTY_CASE = []
+COORD_EMPTY_CASE_P2 = []
+TOUCHED_CASE = []
+COORD_TOUCHED_CASE_P2 = []
+
 LIST_SHIP = [SHIP_FIVE, SHIP_FOUR]
 SHIP_COORD_P1 = {}
 """
@@ -117,7 +122,11 @@ while RUNNING:
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
         SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
         SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
-        showtext(SCREEN, "Au tour de joueur1 de jouer.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
+        showtext(SCREEN, "Au tour du Joueur1 de jouer.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
+        for i in EMPTY_CASE:
+            SCREEN.blit(i.image, i.position)
+        for i in TOUCHED_CASE:
+            SCREEN.blit(i.image, i.position)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -137,7 +146,7 @@ while RUNNING:
                         elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
                             # Ship is placed
                             i.clicked = False
-                            i.set_pos(roundat(i.position[0], 75)+pixelinhd(5, X), roundat(i.position[1], 75)-pixelinhd(30, X))
+                            i.set_pos(roundat(i.position[0], multiplypixelinhd(1.5, 50, X))+pixelinhd(5, X), roundat(i.position[1], multiplypixelinhd(1.5, 50, X))-pixelinhd(30, X))
                             SHIP_COORD_P1[i.name] = []
                             x = i.position[0]-pixelinhd(5, X)
                             nb_x = 1
@@ -149,7 +158,7 @@ while RUNNING:
                             while y > MAIN_GRID.position[1]+pixelinhd(30, X):
                                 y = y - multiplypixelinhd(1.5, 50, X)
                                 nb_y = nb_y + 1
-                                SHIP_COORD_P1[i.name] = []
+                            SHIP_COORD_P1[i.name] = []
                             for ii in range(int(i.name[0])):
                                 SHIP_COORD_P1[i.name].append((nb_x, nb_y))
                                 nb_x = nb_x + 1
@@ -166,6 +175,36 @@ while RUNNING:
                     elif colide(START_BUTTON, event.pos):
                         SHIP_COORD_P2 = generatecoord()
                         stats = 2
+                elif stats == 2:
+                    if colide(GRID_P2, event.pos):
+                        x1 = roundat(event.pos[0], multiplypixelinhd(1.5, 50, X))-multiplypixelinhd(1.5, 29, X)
+                        x = roundat(event.pos[0], multiplypixelinhd(1.5, 50, X))
+                        y1 = roundat(event.pos[1], multiplypixelinhd(1.5, 50, X))-multiplypixelinhd(1.5, 20, X)
+                        y = roundat(event.pos[1], multiplypixelinhd(1.5, 50, X))
+                        nb_x = 0
+                        nb_y = 0
+                        while x > GRID_P2.position[0]:
+                            x = x-multiplypixelinhd(1.5, 50, X)
+                            nb_x = nb_x + 1
+                        while y > GRID_P2.position[1]:
+                            y = y-multiplypixelinhd(1.5, 50, X)
+                            nb_y = nb_y + 1
+                        case_exist = False
+                        if nb_x > 0 and nb_y > 0:
+                            for i in SHIP_COORD_P2.values():
+                                for ii in i:
+                                    if ii == (nb_x, nb_y):
+                                        case_exist = True
+                            if ((nb_x, nb_y) in COORD_TOUCHED_CASE_P2) == False and ((nb_x, nb_y) in COORD_EMPTY_CASE_P2) == False and case_exist:
+                                TOUCHED_CASE.append(Pygameimage("Something case", "assets/something_touched.png"))
+                                TOUCHED_CASE[-1].multiplesize(1.5, X)
+                                TOUCHED_CASE[-1].set_defaultpos(x1, y1)
+                                COORD_TOUCHED_CASE_P2.append((nb_x, nb_y))
+                            elif ((nb_x, nb_y) in COORD_TOUCHED_CASE_P2) == False and ((nb_x, nb_y) in COORD_EMPTY_CASE_P2) == False:
+                                EMPTY_CASE.append(Pygameimage("Empty case", "assets/nothing_touched.png"))
+                                EMPTY_CASE[-1].multiplesize(1.5, X)
+                                EMPTY_CASE[-1].set_defaultpos(x1, y1)
+                                COORD_EMPTY_CASE_P2.append((nb_x, nb_y))
 
     pygame.display.flip()
 
