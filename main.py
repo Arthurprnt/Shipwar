@@ -23,10 +23,13 @@ PLAY_BUTTON.center((X, Y), "all")
 PLAY_BUTTON.add_y(Y/12)
 CLEAR_BUTTON = Pygameimage("Clear button", "assets/trash_button.png")
 CLEAR_BUTTON.multiplesize(0.4, X)
-CLEAR_BUTTON.set_pos(1670, 340)
+CLEAR_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(340, X))
+RANDOM_BUTTON = Pygameimage("Random button", "assets/randomise_button.png")
+RANDOM_BUTTON.multiplesize(0.4, X)
+RANDOM_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(540, X))
 START_BUTTON = Pygameimage("Start button", "assets/play_button.png")
 START_BUTTON.multiplesize(0.4, X)
-START_BUTTON.set_pos(1670, 540)
+START_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(740, X))
 MAIN_GRID = Pygameimage("Main grid", "assets/grid.png")
 MAIN_GRID.multiplesize(1.5, X)
 MAIN_GRID.center((X, Y), "all")
@@ -47,7 +50,16 @@ SHIP_FIVE.multiplesize(1.5, X)
 SHIP_FIVE.set_defaultpos(pixelinhd(304, X), pixelinhd(691, X))
 SHIP_FOUR = Pygameimage("4x1", "assets/4x1.png")
 SHIP_FOUR.multiplesize(1.5, X)
-SHIP_FOUR.set_defaultpos(pixelinhd(334.7, X), pixelinhd(607, X))
+SHIP_FOUR.set_defaultpos(pixelinhd(304, X), pixelinhd(607, X))
+SHIP_THIRD_FIRST = Pygameimage("3x1_1", "assets/3x1.png")
+SHIP_THIRD_FIRST.multiplesize(1.5, X)
+SHIP_THIRD_FIRST.set_defaultpos(pixelinhd(304, X), pixelinhd(523, X))
+SHIP_THIRD_SECOND = Pygameimage("3x1_2", "assets/3x1.png")
+SHIP_THIRD_SECOND.multiplesize(1.5, X)
+SHIP_THIRD_SECOND.set_defaultpos(pixelinhd(304, X), pixelinhd(439, X))
+SHIP_TWO = Pygameimage("2x1", "assets/2x1.png")
+SHIP_TWO.multiplesize(1.5, X)
+SHIP_TWO.set_defaultpos(pixelinhd(304, X), pixelinhd(355, X))
 
 EMPTY_CASE = []
 # By player 2
@@ -57,7 +69,7 @@ TOUCHED_CASE = []
 COORD_EMPTY_CASE_P2 = []
 COORD_TOUCHED_CASE_P2 = []
 
-LIST_SHIP = [SHIP_FIVE, SHIP_FOUR]
+LIST_SHIP = [SHIP_FIVE, SHIP_FOUR, SHIP_THIRD_FIRST, SHIP_THIRD_SECOND, SHIP_TWO]
 SHIP_COORD_P1 = {}
 SHIP_COORD_P2 = {}
 """
@@ -123,7 +135,11 @@ while RUNNING:
         SCREEN.blit(MAIN_GRID.image, MAIN_GRID.position)
         SCREEN.blit(SHIP_FIVE.image, SHIP_FIVE.position)
         SCREEN.blit(SHIP_FOUR.image, SHIP_FOUR.position)
+        SCREEN.blit(SHIP_THIRD_FIRST.image, SHIP_THIRD_FIRST.position)
+        SCREEN.blit(SHIP_THIRD_SECOND.image, SHIP_THIRD_SECOND.position)
+        SCREEN.blit(SHIP_TWO.image, SHIP_TWO.position)
         SCREEN.blit(CLEAR_BUTTON.image, CLEAR_BUTTON.position)
+        SCREEN.blit(RANDOM_BUTTON.image, RANDOM_BUTTON.position)
         if len(SHIP_COORD_P1) == len(LIST_SHIP):
             SCREEN.blit(START_BUTTON.image, START_BUTTON.position)
     elif stats == 2:
@@ -137,7 +153,15 @@ while RUNNING:
         for i in TOUCHED_CASE:
             SCREEN.blit(i.image, i.position)
     elif stats == 3:
-        showtext(SCREEN, txt, FONT, X//2, Y//2, (0, 0, 0))
+        SCREEN.blit(GRID_P1.image, GRID_P1.position)
+        SCREEN.blit(GRID_P2.image, GRID_P2.position)
+        SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
+        SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
+        showtext(SCREEN, txt, FONT, X//2, pixelinhd(170, X), (0, 0, 0))
+        for i in EMPTY_CASE:
+            SCREEN.blit(i.image, i.position)
+        for i in TOUCHED_CASE:
+            SCREEN.blit(i.image, i.position)
     elif stats == 4:
         SCREEN.blit(GRID_P1.image, GRID_P1.position)
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
@@ -183,7 +207,15 @@ while RUNNING:
                 stats = 6
         stats = 5
     elif stats == 5:
-        showtext(SCREEN, f"L'ia a {txt} son tire.", FONT, X//2, Y//2, (0, 0, 0))
+        SCREEN.blit(GRID_P1.image, GRID_P1.position)
+        SCREEN.blit(GRID_P2.image, GRID_P2.position)
+        SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
+        SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
+        showtext(SCREEN, f"L'ia a {txt} son tire.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
+        for i in EMPTY_CASE:
+            SCREEN.blit(i.image, i.position)
+        for i in TOUCHED_CASE:
+            SCREEN.blit(i.image, i.position)
     elif stats == 6:
         showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2, (0, 0, 0))
 
@@ -242,6 +274,12 @@ while RUNNING:
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
                     if colide(CLEAR_BUTTON, event.pos):
+                        for i in LIST_SHIP:
+                            i.clicked = False
+                            i.set_pos(i.default_pos[0], i.default_pos[1])
+                            if i.name in SHIP_COORD_P1.keys():
+                                del SHIP_COORD_P1[i.name]
+                    elif colide(RANDOM_BUTTON, event.pos):
                         for i in LIST_SHIP:
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
