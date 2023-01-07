@@ -68,6 +68,29 @@ SHIPS_LIST = {
     "2x1": SHIP_TWO
 }
 
+P1_LIST = [
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0]]
+P2_LIST = [
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0]]
+
 EMPTY_CASE = []
 # By player 2
 COORD_EMPTY_CASE_P1 = []
@@ -84,28 +107,6 @@ SHIP_COORD_P2 = {}
 1: Shot here but no ship
 2: Shot here and ship
 """
-GRID_LIST_P1 = [
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0]]
-GRID_LIST_P2 = [
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0,0,0]]
 
 RUNNING = True
 pass_stats = False
@@ -281,6 +282,17 @@ while RUNNING:
                                 del SHIP_COORD_P1[i.name]
                     if colide(CLEAR_BUTTON, event.pos):
                         # Reset all boats
+                        P1_LIST = [
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0]]
                         for i in LIST_SHIP:
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
@@ -288,19 +300,30 @@ while RUNNING:
                                 del SHIP_COORD_P1[i.name]
                     elif colide(RANDOM_BUTTON, event.pos):
                         # Randomise boat position
+                        P1_LIST = [
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0,0,0,0]]
                         for i in LIST_SHIP:
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
-                        random_coords = generatecoord()
+                        random_coords = generatecoord(P1_LIST)
                         for i in random_coords:
                             SHIP_COORD_P1[i] = []
                             for y in range(int(i[0])):
                                 SHIP_COORD_P1[i].append(random_coords[i][y])
                             SHIPS_LIST[i].set_pos(MAIN_GRID.position[0] + (random_coords[i][0][0]-1)*pixelinhd(75, X), MAIN_GRID.position[1] + (random_coords[i][0][1]-1)*pixelinhd(75, X))
                     elif colide(START_BUTTON, event.pos):
-                        SHIP_COORD_P2 = generatecoord()
+                        SHIP_COORD_P2 = generatecoord(P2_LIST)
                         stats = 2
                 elif stats == 2:
                     if colide(GRID_P2, event.pos):
