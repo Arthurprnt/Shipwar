@@ -44,7 +44,7 @@ PLAYER1_LOGO.multiplesize(1, X)
 PLAYER1_LOGO.set_defaultpos(pixelinhd(490, X), pixelinhd(1135, X))
 PLAYER2_LOGO = Pygameimage("Player 2 logo", "assets/player2.png")
 PLAYER2_LOGO.multiplesize(1, X)
-PLAYER2_LOGO.set_defaultpos(pixelinhd(1419, X), pixelinhd(1135, X))
+PLAYER2_LOGO.set_defaultpos(pixelinhd(1445, X), pixelinhd(1135, X))
 SHIP_FIVE = Pygameimage("5x1", "assets/5x1.png")
 SHIP_FIVE.multiplesize(1.5, X)
 SHIP_FIVE.set_defaultpos(pixelinhd(304, X), pixelinhd(691, X))
@@ -60,6 +60,13 @@ SHIP_THIRD_SECOND.set_defaultpos(pixelinhd(304, X), pixelinhd(439, X))
 SHIP_TWO = Pygameimage("2x1", "assets/2x1.png")
 SHIP_TWO.multiplesize(1.5, X)
 SHIP_TWO.set_defaultpos(pixelinhd(304, X), pixelinhd(355, X))
+SHIPS_LIST = {
+    "5x1": SHIP_FIVE,
+    "4x1": SHIP_FOUR,
+    "3x1_1": SHIP_THIRD_FIRST,
+    "3x1_2": SHIP_THIRD_SECOND,
+    "2x1": SHIP_TWO
+}
 
 EMPTY_CASE = []
 # By player 2
@@ -253,7 +260,6 @@ while RUNNING:
                             # Ship is placed
                             i.clicked = False
                             i.set_pos(roundat(i.position[0], multiplypixelinhd(1.5, 50, X))+pixelinhd(5, X), roundat(i.position[1], multiplypixelinhd(1.5, 50, X))-pixelinhd(30, X))
-                            SHIP_COORD_P1[i.name] = []
                             x = i.position[0]-pixelinhd(5, X)
                             nb_x = 1
                             while x > MAIN_GRID.position[0]-pixelinhd(5, X):
@@ -274,17 +280,25 @@ while RUNNING:
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
                     if colide(CLEAR_BUTTON, event.pos):
+                        # Reset all boats
                         for i in LIST_SHIP:
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
                     elif colide(RANDOM_BUTTON, event.pos):
+                        # Randomise boat position
                         for i in LIST_SHIP:
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
+                        random_coords = generatecoord()
+                        for i in random_coords:
+                            SHIP_COORD_P1[i] = []
+                            for y in range(int(i[0])):
+                                SHIP_COORD_P1[i].append(random_coords[i][y])
+                            SHIPS_LIST[i].set_pos(MAIN_GRID.position[0] + (random_coords[i][0][0]-1)*pixelinhd(75, X), MAIN_GRID.position[1] + (random_coords[i][0][1]-1)*pixelinhd(75, X))
                     elif colide(START_BUTTON, event.pos):
                         SHIP_COORD_P2 = generatecoord()
                         stats = 2
