@@ -10,6 +10,7 @@ ICON = pygame.image.load('assets/icon.png')
 pygame.display.set_icon(ICON)
 pygame.display.flip()
 
+DEBUG = False
 FOND = pygame.image.load('assets/background.png')
 FOND = pygame.transform.scale(FOND, (X, Y))
 FONT = pygame.font.Font('assets/Montserrat-Black.ttf', 55)
@@ -126,9 +127,17 @@ CLOSING GAME: 7
 
 while RUNNING:
 
-    #print(f"Stats: {stats}")
-
     SCREEN.blit(FOND, (0, 0))
+
+    if DEBUG:
+        # For debug
+        FONT2 = pygame.font.Font('assets/Montserrat-Black.ttf', 25)
+        showtext(SCREEN, f"Stats: {stats}", FONT2, pixelinhd(85, X), pixelinhd(20, X), (0, 0, 0))
+        showtext(SCREEN, "P1_LIST:", FONT2, pixelinhd(87, X), pixelinhd(42, X), (0, 0, 0))
+        y = pixelinhd(64, X)
+        for i in P1_LIST:
+            showtext(SCREEN, str(i), FONT2, pixelinhd(200, X), y, (0, 0, 0))
+            y = y+pixelinhd(22, X)
 
     if stats == 0:
         SCREEN.blit(LOGO_MENU.image, LOGO_MENU.position)
@@ -227,7 +236,6 @@ while RUNNING:
     elif stats == 6:
         showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2, (0, 0, 0))
 
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -248,6 +256,8 @@ while RUNNING:
                     stats = 2
                 elif stats == 6:
                     RUNNING = False
+            elif event.key == pygame.K_F4:
+                DEBUG = not(DEBUG)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_LEFT:
                 if colide(PLAY_BUTTON, event.pos) and stats == 0:
@@ -256,6 +266,25 @@ while RUNNING:
                     for i in LIST_SHIP:
                         if colide(i, event.pos) and stats == 1 and isclickable(LIST_SHIP):
                             # Ship is clicked to be placed next
+                            x = i.position[0] - pixelinhd(5, X)
+                            y = i.position[1] + pixelinhd(30, X)
+                            if i.position != i.default_pos:
+                                nb_x = 1
+                                while x > MAIN_GRID.position[0] - pixelinhd(5, X):
+                                    x = x - multiplypixelinhd(1.5, 50, X)
+                                    nb_x = nb_x + 1
+                                y = i.position[1] + pixelinhd(30, X)
+                                nb_y = 1
+                                while y > MAIN_GRID.position[1] + pixelinhd(30, X):
+                                    y = y - multiplypixelinhd(1.5, 50, X)
+                                    nb_y = nb_y + 1
+                                TEMP_COORD = []
+                                for ii in range(int(i.name[0])):
+                                    TEMP_COORD.append((nb_x, nb_y))
+                                    nb_x = nb_x + 1
+                                print(TEMP_COORD)
+                                for y in TEMP_COORD:
+                                    P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
                         elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
                             # Ship is placed
@@ -275,6 +304,12 @@ while RUNNING:
                             for ii in range(int(i.name[0])):
                                 SHIP_COORD_P1[i.name].append((nb_x, nb_y))
                                 nb_x = nb_x + 1
+                            if not placable(SHIP_COORD_P1[i.name], P1_LIST):
+                                del SHIP_COORD_P1[i.name]
+                                i.clicked = True
+                            else:
+                                for iii in SHIP_COORD_P1[i.name]:
+                                    P1_LIST[iii[1]-1][iii[0]-1] = 1
                         elif colide(i, event.pos):
                             i.clicked = False
                             i.set_pos(i.default_pos[0], i.default_pos[1])
