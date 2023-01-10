@@ -10,55 +10,86 @@ class Pygameimage():
         self.default_pos = [0, 0]
         self.area = [[self.position[0], self.position[0]+self.size[0]], [self.position[1], self.position[1]+self.size[1]]]
         self.clicked = False
+        self.axe = "x"
 
     def multiplesize(self, ratio, screen_size):
         assert type(ratio) == float or type(ratio) == int
         assert type(screen_size) == int
         self.size = (round(self.size[0]*ratio*screen_size/2560), round(self.size[1]*ratio*screen_size/2560))
         self.image = pygame.transform.scale(self.image, self.size)
-        self.area = [[self.position[0], self.position[0]+self.size[0]], [self.position[1], self.position[1]+self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def center(self, screen_sizes, x_or_y):
         assert type(x_or_y) == str
         if x_or_y.lower() == "all":
             self.position = [screen_sizes[0]/2-self.size[0]/2, screen_sizes[1]/2-self.size[1]/2]
             self.default_pos = [screen_sizes[0]/2-self.size[0]/2, screen_sizes[1]/2-self.size[1]/2]
-            self.area = [[self.position[0], self.position[0]+self.size[0]], [self.position[1], self.position[1]+self.size[1]]]
+            if self.axe == "x":
+                self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+            else:
+                self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
         elif x_or_y.lower() == "x":
             self.position[0] = screen_sizes[0]/2-self.size[0]/2
             self.default_pos[0] = screen_sizes[0]/2-self.size[0]/2
-            self.area = [[self.position[0], self.position[0]+self.size[0]], [self.position[1], self.position[1]+self.size[1]]]
+            if self.axe == "x":
+                self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+            else:
+                self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
         elif x_or_y.lower() == "y":
             self.position[1] = screen_sizes[1]/2-self.size[1]/2
             self.default_pos[1] = screen_sizes[1]/2-self.size[1]/2
-            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+            if self.axe == "x":
+                self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+            else:
+                self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def add_y(self, new_y):
         new_y = round(new_y)
         self.position[1] = self.position[1]+new_y
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def add_x(self, new_x):
         new_x = round(new_x)
         self.position[0] = self.position[1]+new_x
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def set_y(self, new_y):
         self.position[1] = round(new_y)
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def set_x(self, new_x):
         self.position[0] = round(new_x)
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def set_pos(self, new_x, new_y):
         self.position = [round(new_x), round(new_y)]
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
     def set_defaultpos(self, new_x, new_y):
         self.position = [round(new_x), round(new_y)]
         self.default_pos = [round(new_x), round(new_y)]
-        self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        if self.axe == "x":
+            self.area = [[self.position[0], self.position[0] + self.size[0]], [self.position[1], self.position[1] + self.size[1]]]
+        else:
+            self.area = [[self.position[0], self.position[0] + self.size[1]], [self.position[1], self.position[1] + self.size[0]]]
 
 def colide(image, mouse):
     return (mouse[0] <= image.area[0][1]) and (mouse[0] >= image.area[0][0]) and (mouse[1] <= image.area[1][1]) and (mouse[1] >= image.area[1][0])

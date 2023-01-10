@@ -113,6 +113,7 @@ RUNNING = True
 pass_stats = False
 stats = 0
 txt = ""
+clickedship = ""
 """
 Diffrents stats:
 MENU: 0
@@ -133,8 +134,14 @@ while RUNNING:
         # For debug
         FONT2 = pygame.font.Font('assets/Montserrat-Black.ttf', 25)
         showtext(SCREEN, f"Stats: {stats}", FONT2, pixelinhd(85, X), pixelinhd(20, X), (0, 0, 0))
-        showtext(SCREEN, "P1_LIST:", FONT2, pixelinhd(87, X), pixelinhd(42, X), (0, 0, 0))
-        y = pixelinhd(64, X)
+        showtext(SCREEN, f"Mouse pos: {str(pygame.mouse.get_pos())}", FONT2, pixelinhd(180, X), pixelinhd(42, X), (0, 0, 0))
+        if clickedship != "":
+            showtext(SCREEN, f"Axe clickedship: {SHIPS_LIST[clickedship].axe}", FONT2, pixelinhd(160, X), pixelinhd(64, X), (0, 0, 0))
+            y = 86
+        else:
+            y = 64
+        showtext(SCREEN, "P1_LIST:", FONT2, pixelinhd(87, X), pixelinhd(y, X), (0, 0, 0))
+        y = pixelinhd(y+22, X)
         for i in P1_LIST:
             showtext(SCREEN, str(i), FONT2, pixelinhd(200, X), y, (0, 0, 0))
             y = y+pixelinhd(22, X)
@@ -279,16 +286,22 @@ while RUNNING:
                                     y = y - multiplypixelinhd(1.5, 50, X)
                                     nb_y = nb_y + 1
                                 TEMP_COORD = []
-                                for ii in range(int(i.name[0])):
-                                    TEMP_COORD.append((nb_x, nb_y))
-                                    nb_x = nb_x + 1
-                                print(TEMP_COORD)
+                                if i.axe == "x":
+                                    for ii in range(int(i.name[0])):
+                                        TEMP_COORD.append((nb_x, nb_y))
+                                        nb_x = nb_x + 1
+                                else:
+                                    for ii in range(int(i.name[0])):
+                                        TEMP_COORD.append((nb_x, nb_y))
+                                        nb_y = nb_y + 1
                                 for y in TEMP_COORD:
                                     P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
+                            clickedship = i.name
                         elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
                             # Ship is placed
                             i.clicked = False
+                            clickedship = ""
                             i.set_pos(roundat(i.position[0], multiplypixelinhd(1.5, 50, X))+pixelinhd(5, X), roundat(i.position[1], multiplypixelinhd(1.5, 50, X))-pixelinhd(30, X))
                             x = i.position[0]-pixelinhd(5, X)
                             nb_x = 1
@@ -301,9 +314,14 @@ while RUNNING:
                                 y = y - multiplypixelinhd(1.5, 50, X)
                                 nb_y = nb_y + 1
                             SHIP_COORD_P1[i.name] = []
-                            for ii in range(int(i.name[0])):
-                                SHIP_COORD_P1[i.name].append((nb_x, nb_y))
-                                nb_x = nb_x + 1
+                            if i.axe == "x":
+                                for ii in range(int(i.name[0])):
+                                    SHIP_COORD_P1[i.name].append((nb_x, nb_y))
+                                    nb_x = nb_x + 1
+                            else:
+                                for ii in range(int(i.name[0])):
+                                    SHIP_COORD_P1[i.name].append((nb_x, nb_y))
+                                    nb_y = nb_y + 1
                             if not placable(SHIP_COORD_P1[i.name], P1_LIST):
                                 del SHIP_COORD_P1[i.name]
                                 i.clicked = True
@@ -312,6 +330,10 @@ while RUNNING:
                                     P1_LIST[iii[1]-1][iii[0]-1] = 1
                         elif colide(i, event.pos):
                             i.clicked = False
+                            clickedship = ""
+                            if i.axe == "y":
+                                i.image = pygame.transform.rotate(i.image, 90)
+                            i.axe = "x"
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
@@ -330,6 +352,10 @@ while RUNNING:
                         [0,0,0,0,0,0,0,0,0,0]]
                         for i in LIST_SHIP:
                             i.clicked = False
+                            clickedship = ""
+                            if i.axe == "y":
+                                i.image = pygame.transform.rotate(i.image, 90)
+                            i.axe = "x"
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
@@ -348,6 +374,10 @@ while RUNNING:
                         [0,0,0,0,0,0,0,0,0,0]]
                         for i in LIST_SHIP:
                             i.clicked = False
+                            clickedship = ""
+                            if i.axe == "y":
+                                i.image = pygame.transform.rotate(i.image, 90)
+                            i.axe = "x"
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
@@ -358,8 +388,9 @@ while RUNNING:
                                 SHIP_COORD_P1[i].append(random_coords[i][y])
                             SHIPS_LIST[i].set_pos(MAIN_GRID.position[0] + (random_coords[i][0][0]-1)*pixelinhd(75, X), MAIN_GRID.position[1] + (random_coords[i][0][1]-1)*pixelinhd(75, X))
                     elif colide(START_BUTTON, event.pos):
-                        SHIP_COORD_P2 = generatecoord(P2_LIST)
-                        stats = 2
+                        if len(SHIP_COORD_P1) == len(LIST_SHIP):
+                            SHIP_COORD_P2 = generatecoord(P2_LIST)
+                            stats = 2
                 elif stats == 2:
                     if colide(GRID_P2, event.pos):
                         x1 = roundat(event.pos[0], multiplypixelinhd(1.5, 50, X))-multiplypixelinhd(1.5, 29, X)
@@ -397,6 +428,14 @@ while RUNNING:
                     if pass_stats:
                         pass_stats = False
                         stats = 3
+            elif event.button == 2: # Wheel button
+                if stats == 1:
+                    if clickedship !=  "":
+                        if SHIPS_LIST[clickedship].axe == "x":
+                            SHIPS_LIST[clickedship].axe = "y"
+                        else:
+                            SHIPS_LIST[clickedship].axe = "x"
+                        SHIPS_LIST[clickedship].image = pygame.transform.rotate(SHIPS_LIST[clickedship].image, 90)
 
     pygame.display.flip()
 
