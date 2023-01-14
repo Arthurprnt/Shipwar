@@ -46,6 +46,8 @@ PLAYER1_LOGO.set_defaultpos(pixelinhd(490, X), pixelinhd(1135, X))
 PLAYER2_LOGO = Pygameimage("Player 2 logo", "assets/player2.png")
 PLAYER2_LOGO.multiplesize(1, X)
 PLAYER2_LOGO.set_defaultpos(pixelinhd(1445, X), pixelinhd(1135, X))
+CANT_PLACE = Pygameimage("Cant place", "assets/cant_place.png")
+CANT_PLACE.multiplesize(1.5, X)
 SHIP_FIVE = Pygameimage("5x1", "assets/5x1.png")
 SHIP_FIVE.multiplesize(1.5, X)
 SHIP_FIVE.set_defaultpos(pixelinhd(304, X), pixelinhd(691, X))
@@ -157,6 +159,18 @@ while RUNNING:
                 except:
                     pass
         SCREEN.blit(MAIN_GRID.image, MAIN_GRID.position)
+        CANT_PLACE_DICT = {}
+        for i in SHIP_COORD_P1:
+            for y in SHIP_COORD_P1[i]:
+                for xx in range(-1, 2):
+                    for yy in range(-1, 2):
+                        if 10 >= y[0] + xx >= 1 and 10 >= y[1] + yy >= 1:
+                            if not (i in CANT_PLACE_DICT.keys()):
+                                CANT_PLACE_DICT[f"{y[0] + xx - 1}{y[1] + yy - 1}"] = (y[0] + xx - 1, y[1] + yy - 1)
+        for i in CANT_PLACE_DICT:
+            CANT_PLACE.set_pos(pixelinhd(MAIN_GRID.position[0], X) + pixelinhd(75, X) * CANT_PLACE_DICT[i][0],
+                               pixelinhd(MAIN_GRID.position[1], X) + pixelinhd(75, X) * CANT_PLACE_DICT[i][1])
+            SCREEN.blit(CANT_PLACE.image, CANT_PLACE.position)
         SCREEN.blit(SHIP_FIVE.image, SHIP_FIVE.position)
         SCREEN.blit(SHIP_FOUR.image, SHIP_FOUR.position)
         SCREEN.blit(SHIP_THIRD_FIRST.image, SHIP_THIRD_FIRST.position)
