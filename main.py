@@ -261,8 +261,6 @@ while RUNNING:
                         stats = 4
                 elif stats == 5:
                     stats = 2
-                elif stats == 6:
-                    RUNNING = False
             elif event.key == pygame.K_F4:
                 DEBUG = not(DEBUG)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -295,7 +293,7 @@ while RUNNING:
                                         TEMP_COORD.append((nb_x, nb_y))
                                         nb_y = nb_y + 1
                                 for y in TEMP_COORD:
-                                    P1_LIST[y[1]-1][y[0]-1] = 0
+                                        P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
                             clickedship = i.name
                         elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
@@ -381,7 +379,15 @@ while RUNNING:
                             i.set_pos(i.default_pos[0], i.default_pos[1])
                             if i.name in SHIP_COORD_P1.keys():
                                 del SHIP_COORD_P1[i.name]
-                        random_coords = generatecoord(P1_LIST)
+                        returnedcoords = generatecoord(P1_LIST)
+                        random_coords = returnedcoords[0]
+                        for i in returnedcoords[1]:
+                            if SHIPS_LIST[i].axe != returnedcoords[1][i]:
+                                SHIPS_LIST[i].image = pygame.transform.rotate(SHIPS_LIST[i].image, 90)
+                                if SHIPS_LIST[i].axe == "x":
+                                    SHIPS_LIST[i].axe = "y"
+                                else:
+                                    SHIPS_LIST[i].axe = "x"
                         for i in random_coords:
                             SHIP_COORD_P1[i] = []
                             for y in range(int(i[0])):
@@ -389,7 +395,7 @@ while RUNNING:
                             SHIPS_LIST[i].set_pos(MAIN_GRID.position[0] + (random_coords[i][0][0]-1)*pixelinhd(75, X), MAIN_GRID.position[1] + (random_coords[i][0][1]-1)*pixelinhd(75, X))
                     elif colide(START_BUTTON, event.pos):
                         if len(SHIP_COORD_P1) == len(LIST_SHIP):
-                            SHIP_COORD_P2 = generatecoord(P2_LIST)
+                            SHIP_COORD_P2 = generatecoord(P2_LIST)[0]
                             stats = 2
                 elif stats == 2:
                     if colide(GRID_P2, event.pos):
