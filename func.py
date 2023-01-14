@@ -59,7 +59,7 @@ def placable(coord_list, grid_list):
             return False
         for y in range(-1, 2):
             for x in range(-1, 2):
-                if 9 >= i[1]+y >= 0 and 9 >= i[0]+x >= 0:
+                if 9 >= i[1]+y-1 >= 0 and 9 >= i[0]+x-1 >= 0:
                     if grid_list[i[1]+y-1][i[0]+x-1] != 0:
                         return False
     return True

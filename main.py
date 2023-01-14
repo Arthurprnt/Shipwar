@@ -293,7 +293,7 @@ while RUNNING:
                                         TEMP_COORD.append((nb_x, nb_y))
                                         nb_y = nb_y + 1
                                 for y in TEMP_COORD:
-                                        P1_LIST[y[1]-1][y[0]-1] = 0
+                                    P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
                             clickedship = i.name
                         elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
