@@ -15,11 +15,37 @@ def generatecoord(grid):
     SHIP_AXE["2x1"] = placeboat(SHIP_COORD, "2x1", grid, 2)
     return SHIP_COORD, SHIP_AXE
 
-def aishoot(shotsmade):
-    x = random.randint(1, 10)
-    y = random.randint(1, 10)
-    while (x, y) in shotsmade:
-        x, y = aishoot(shotsmade)
+def aishoot(shotsmade, touchedshots):
+    if shotsmade != [] and shotsmade[-1] in touchedshots and touchedshots[-1][0] < 9:
+        x = touchedshots[-1][0] + 1
+        y = touchedshots[-1][1]
+        while (x, y) in shotsmade:
+            x = random.randint(1, 10)
+            y = random.randint(1, 10)
+    elif len(shotsmade)>=2 and shotsmade[-2] in touchedshots and touchedshots[-1][1] < 9:
+        x = touchedshots[-1][0]
+        y = touchedshots[-1][1] + 1
+        while (x, y) in shotsmade:
+            x = random.randint(1, 10)
+            y = random.randint(1, 10)
+    elif len(shotsmade)>=3 and shotsmade[-3] in touchedshots and touchedshots[-1][0] > 0:
+        x = touchedshots[-1][0] - 1
+        y = touchedshots[-1][1]
+        while (x, y) in shotsmade:
+            x = random.randint(1, 10)
+            y = random.randint(1, 10)
+    elif len(shotsmade)>=4 and shotsmade[-4] in touchedshots and touchedshots[-1][1] > 0:
+        x = touchedshots[-1][0]
+        y = touchedshots[-1][1] - 1
+        while (x, y) in shotsmade:
+            x = random.randint(1, 10)
+            y = random.randint(1, 10)
+    else:
+        x = random.randint(1, 10)
+        y = random.randint(1, 10)
+        while (x, y) in shotsmade:
+            x = random.randint(1, 10)
+            y = random.randint(1, 10)
     return (x, y)
 
 def createshipcoord(size):

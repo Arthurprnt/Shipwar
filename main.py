@@ -94,6 +94,7 @@ P2_LIST = [
 [0,0,0,0,0,0,0,0,0,0],
 [0,0,0,0,0,0,0,0,0,0]]
 
+IA_SHOOTS = []
 EMPTY_CASE = []
 # By player 2
 COORD_EMPTY_CASE_P1 = []
@@ -210,7 +211,8 @@ while RUNNING:
             SCREEN.blit(i.image, i.position)
         for i in TOUCHED_CASE:
             SCREEN.blit(i.image, i.position)
-        response = aishoot(COORD_TOUCHED_CASE_P1+COORD_EMPTY_CASE_P1)
+        response = aishoot(IA_SHOOTS, COORD_TOUCHED_CASE_P1)
+        IA_SHOOTS.append(response)
         nb_x = response[0]
         nb_y = response[1]
 
@@ -225,25 +227,23 @@ while RUNNING:
                 for ii in i:
                     if ii == (nb_x, nb_y):
                         case_exist = True
-            if ((nb_x, nb_y) in COORD_TOUCHED_CASE_P1) == False and ((nb_x, nb_y) in COORD_EMPTY_CASE_P1) == False and case_exist:
+            if case_exist:
                 txt = "touché"
                 TOUCHED_CASE.append(Pygameimage("Something case", "assets/something_touched.png"))
                 TOUCHED_CASE[-1].multiplesize(1.5, X)
                 TOUCHED_CASE[-1].set_defaultpos(x1, y1)
                 COORD_TOUCHED_CASE_P1.append((nb_x, nb_y))
-            elif ((nb_x, nb_y) in COORD_TOUCHED_CASE_P1) == False and ((nb_x, nb_y) in COORD_EMPTY_CASE_P1) == False:
+            else:
                 txt = "loupé"
                 EMPTY_CASE.append(Pygameimage("Empty case", "assets/nothing_touched.png"))
                 EMPTY_CASE[-1].multiplesize(1.5, X)
                 EMPTY_CASE[-1].set_defaultpos(x1, y1)
                 COORD_EMPTY_CASE_P1.append((nb_x, nb_y))
-            length = 0
-            for i in SHIP_COORD_P1:
-                length = length + int(i[0])
-            if length == len(COORD_TOUCHED_CASE_P1):
+            if 2+2*3+4+5 == len(COORD_TOUCHED_CASE_P1):
                 winner = "l'ia"
                 stats = 6
-        stats = 5
+            else:
+                stats = 5
     elif stats == 5:
         SCREEN.blit(GRID_P1.image, GRID_P1.position)
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
@@ -265,10 +265,7 @@ while RUNNING:
                 RUNNING = False
             elif event.key in (pygame.K_SPACE, pygame.K_RETURN):
                 if stats == 3:
-                    length = 0
-                    for i in SHIP_COORD_P2:
-                        length = length + int(i[0])
-                    if length == len(COORD_TOUCHED_CASE_P2):
+                    if 2+2*3+4+5 == len(COORD_TOUCHED_CASE_P2):
                         winner = "le joueur 1"
                         stats = 6
                     else:
