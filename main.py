@@ -331,7 +331,7 @@ while RUNNING:
                                     P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
                             clickedship = i.name
-                        elif i.clicked and colide(MAIN_GRID, (event.pos[0]+pixelinhd(37, X), event.pos[1]+pixelinhd(37, X))) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
+                        elif i.clicked and colide(MAIN_GRID, event.pos) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
                             # Ship is placed
                             i.clicked = False
                             clickedship = ""
@@ -355,7 +355,7 @@ while RUNNING:
                                 for ii in range(int(i.name[0])):
                                     SHIP_COORD_P1[i.name].append((nb_x, nb_y))
                                     nb_y = nb_y + 1
-                            if not placable(SHIP_COORD_P1[i.name], P1_LIST):
+                            if not(placable(SHIP_COORD_P1[i.name], P1_LIST)) or i.position[1] == 270:
                                 del SHIP_COORD_P1[i.name]
                                 i.clicked = True
                             else:
