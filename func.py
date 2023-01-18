@@ -15,26 +15,35 @@ def generatecoord(grid):
     SHIP_AXE["2x1"] = placeboat(SHIP_COORD, "2x1", grid, 2)
     return SHIP_COORD, SHIP_AXE
 
-def aishoot(shotsmade, touchedshots):
-    if shotsmade != [] and shotsmade[-1] in touchedshots and touchedshots[-1][0] < 9:
+def aishoot(shotsmade, touchedshots, list_pos, diff):
+    if len(shotsmade)!=0  and len(touchedshots)/len(shotsmade) < 0.25 and diff > 1:
+        possible_shoots = []
+        for i in list_pos.keys():
+            for y in list_pos[i]:
+                if not(y in shotsmade):
+                    possible_shoots.append(y)
+        rng = random.randint(0, len(possible_shoots)-1)
+        x = possible_shoots[rng][0]
+        y = possible_shoots[rng][1]
+    elif shotsmade != [] and shotsmade[-1] in touchedshots and touchedshots[-1][0] <= 9 and diff > 0:
         x = touchedshots[-1][0] + 1
         y = touchedshots[-1][1]
         while (x, y) in shotsmade:
             x = random.randint(1, 10)
             y = random.randint(1, 10)
-    elif len(shotsmade)>=2 and shotsmade[-2] in touchedshots and touchedshots[-1][1] < 9:
+    elif len(shotsmade)>=2 and shotsmade[-2] in touchedshots and touchedshots[-1][1] <= 9 and diff > 0:
         x = touchedshots[-1][0]
         y = touchedshots[-1][1] + 1
         while (x, y) in shotsmade:
             x = random.randint(1, 10)
             y = random.randint(1, 10)
-    elif len(shotsmade)>=3 and shotsmade[-3] in touchedshots and touchedshots[-1][0] > 0:
+    elif len(shotsmade)>=3 and shotsmade[-3] in touchedshots and touchedshots[-1][0] >= 0 and diff > 0:
         x = touchedshots[-1][0] - 1
         y = touchedshots[-1][1]
         while (x, y) in shotsmade:
             x = random.randint(1, 10)
             y = random.randint(1, 10)
-    elif len(shotsmade)>=4 and shotsmade[-4] in touchedshots and touchedshots[-1][1] > 0:
+    elif len(shotsmade)>=4 and shotsmade[-4] in touchedshots and touchedshots[-1][1] >= 0 and diff > 0:
         x = touchedshots[-1][0]
         y = touchedshots[-1][1] - 1
         while (x, y) in shotsmade:

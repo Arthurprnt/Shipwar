@@ -22,6 +22,7 @@ PLAY_BUTTON = Pygameimage("Play button", "assets/play_button.png")
 PLAY_BUTTON.multiplesize(0.5, X)
 PLAY_BUTTON.center((X, Y), "all")
 PLAY_BUTTON.add_y(Y/12)
+PLAY_BUTTON.add_x(pixelinhd(60, X))
 CLEAR_BUTTON = Pygameimage("Clear button", "assets/trash_button.png")
 CLEAR_BUTTON.multiplesize(0.4, X)
 CLEAR_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(340, X))
@@ -63,6 +64,23 @@ SHIP_THIRD_SECOND.set_defaultpos(pixelinhd(304, X), pixelinhd(439, X))
 SHIP_TWO = Pygameimage("2x1", "assets/2x1.png")
 SHIP_TWO.multiplesize(1.5, X)
 SHIP_TWO.set_defaultpos(pixelinhd(304, X), pixelinhd(355, X))
+BUTTON_FACILE = Pygameimage("Facile", "assets/facile.png")
+BUTTON_FACILE.multiplesize(0.5, X)
+BUTTON_FACILE.center((X, Y), "all")
+BUTTON_FACILE.add_y(Y/12)
+BUTTON_FACILE.add_x(X/7.5)
+BUTTON_MOYEN = Pygameimage("Moyen", "assets/moyen.png")
+BUTTON_MOYEN.multiplesize(0.5, X)
+BUTTON_MOYEN.center((X, Y), "all")
+BUTTON_MOYEN.add_y(Y/12)
+BUTTON_MOYEN.add_x(X/7.5)
+BUTTON_DIFFICILE = Pygameimage("Difficile", "assets/difficile.png")
+BUTTON_DIFFICILE.multiplesize(0.5, X)
+BUTTON_DIFFICILE.center((X, Y), "all")
+BUTTON_DIFFICILE.add_y(Y/12)
+BUTTON_DIFFICILE.add_x(X/7.5)
+DIFFICULTY_LIST = [BUTTON_FACILE, BUTTON_MOYEN, BUTTON_DIFFICILE]
+
 SHIPS_LIST = {
     "5x1": SHIP_FIVE,
     "4x1": SHIP_FOUR,
@@ -115,6 +133,7 @@ SHIP_COORD_P2 = {}
 RUNNING = True
 pass_stats = False
 stats = 0
+difficulty = 0
 txt = ""
 clickedship = ""
 """
@@ -152,6 +171,7 @@ while RUNNING:
     if stats == 0:
         SCREEN.blit(LOGO_MENU.image, LOGO_MENU.position)
         SCREEN.blit(PLAY_BUTTON.image, PLAY_BUTTON.position)
+        SCREEN.blit(DIFFICULTY_LIST[difficulty].image, DIFFICULTY_LIST[difficulty].position)
     elif stats == 1:
         for i in LIST_SHIP:
             if i.clicked:
@@ -169,8 +189,7 @@ while RUNNING:
                             if not (i in CANT_PLACE_DICT.keys()):
                                 CANT_PLACE_DICT[f"{y[0] + xx - 1}{y[1] + yy - 1}"] = (y[0] + xx - 1, y[1] + yy - 1)
         for i in CANT_PLACE_DICT:
-            CANT_PLACE.set_pos(pixelinhd(MAIN_GRID.position[0], X) + pixelinhd(75, X) * CANT_PLACE_DICT[i][0],
-                               pixelinhd(MAIN_GRID.position[1], X) + pixelinhd(75, X) * CANT_PLACE_DICT[i][1])
+            CANT_PLACE.set_pos(MAIN_GRID.position[0] + pixelinhd(75, X) * CANT_PLACE_DICT[i][0], MAIN_GRID.position[1] + pixelinhd(75, X) * CANT_PLACE_DICT[i][1])
             SCREEN.blit(CANT_PLACE.image, CANT_PLACE.position)
         SCREEN.blit(SHIP_FIVE.image, SHIP_FIVE.position)
         SCREEN.blit(SHIP_FOUR.image, SHIP_FOUR.position)
@@ -211,15 +230,15 @@ while RUNNING:
             SCREEN.blit(i.image, i.position)
         for i in TOUCHED_CASE:
             SCREEN.blit(i.image, i.position)
-        response = aishoot(IA_SHOOTS, COORD_TOUCHED_CASE_P1)
+        response = aishoot(IA_SHOOTS, COORD_TOUCHED_CASE_P1, SHIP_COORD_P1, difficulty)
         IA_SHOOTS.append(response)
         nb_x = response[0]
         nb_y = response[1]
 
-        x1 = GRID_P1.position[0]+(nb_x-1)*multiplypixelinhd(1.5, 50, X)
-        x = GRID_P1.position[0]+(nb_x-1)*multiplypixelinhd(1.5, 50, X)
-        y1 = GRID_P1.position[1]+(nb_y-1)*multiplypixelinhd(1.5, 50, X)
-        y = GRID_P1.position[1]+(nb_y-1)*multiplypixelinhd(1.5, 50, X)
+        x1 = GRID_P1.position[0]+(nb_x-1)*multiplypixelinhd(1.504, 50, X)
+        x = GRID_P1.position[0]+(nb_x-1)*multiplypixelinhd(1.504, 50, X)
+        y1 = GRID_P1.position[1]+(nb_y-1)*multiplypixelinhd(1.504, 50, X)
+        y = GRID_P1.position[1]+(nb_y-1)*multiplypixelinhd(1.504, 50, X)
 
         case_exist = False
         if nb_x > 0 and nb_y > 0:
@@ -276,8 +295,13 @@ while RUNNING:
                 DEBUG = not(DEBUG)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_LEFT:
-                if colide(PLAY_BUTTON, event.pos) and stats == 0:
-                    stats = 1
+                if stats == 0:
+                    if colide(BUTTON_FACILE, event.pos):
+                        difficulty = difficulty + 1
+                        if difficulty == 3:
+                            difficulty = 0
+                    elif colide(PLAY_BUTTON, event.pos):
+                        stats = 1
                 elif stats == 1:
                     for i in LIST_SHIP:
                         if colide(i, event.pos) and stats == 1 and isclickable(LIST_SHIP):
@@ -410,9 +434,7 @@ while RUNNING:
                             stats = 2
                 elif stats == 2:
                     if colide(GRID_P2, event.pos):
-                        x1 = roundat(event.pos[0], multiplypixelinhd(1.5, 50, X))-multiplypixelinhd(1.5, 29, X)
                         x = roundat(event.pos[0], multiplypixelinhd(1.5, 50, X))
-                        y1 = roundat(event.pos[1], multiplypixelinhd(1.5, 50, X))-multiplypixelinhd(1.5, 20, X)
                         y = roundat(event.pos[1], multiplypixelinhd(1.5, 50, X))
                         nb_x = 0
                         nb_y = 0
@@ -423,6 +445,8 @@ while RUNNING:
                             y = y-multiplypixelinhd(1.5, 50, X)
                             nb_y = nb_y + 1
                         case_exist = False
+                        x1 = GRID_P2.position[0] + (nb_x - 1) * multiplypixelinhd(1.504, 50, X)
+                        y1 = GRID_P2.position[1] + (nb_y - 1) * multiplypixelinhd(1.504, 50, X)
                         if nb_x > 0 and nb_y > 0:
                             for i in SHIP_COORD_P2.values():
                                 for ii in i:
