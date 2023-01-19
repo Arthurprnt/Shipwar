@@ -32,6 +32,10 @@ RANDOM_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(540, X))
 START_BUTTON = Pygameimage("Start button", "assets/play_button.png")
 START_BUTTON.multiplesize(0.4, X)
 START_BUTTON.set_pos(pixelinhd(1670, X), pixelinhd(740, X))
+REPLAY_BUTTON = Pygameimage("Replay button", "assets/rejouer.png")
+REPLAY_BUTTON.multiplesize(0.3, X)
+REPLAY_BUTTON.center((X, Y), "x")
+REPLAY_BUTTON.set_pos(REPLAY_BUTTON.position[0], Y/2+pixelinhd(Y/28, X))
 MAIN_GRID = Pygameimage("Main grid", "assets/grid.png")
 MAIN_GRID.multiplesize(1.5, X)
 MAIN_GRID.center((X, Y), "all")
@@ -145,7 +149,6 @@ PLAYER_1_RESULT: 3
 PLAYER_2_PLAY: 4
 PLAYER_2_RESULT: 5
 END: 6
-CLOSING GAME: 7
 """
 
 while RUNNING:
@@ -274,7 +277,8 @@ while RUNNING:
         for i in TOUCHED_CASE:
             SCREEN.blit(i.image, i.position)
     elif stats == 6:
-        showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2, (0, 0, 0))
+        showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2-pixelinhd(Y/28, X), (0, 0, 0))
+        SCREEN.blit(REPLAY_BUTTON.image, REPLAY_BUTTON.position)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -372,48 +376,10 @@ while RUNNING:
                                 del SHIP_COORD_P1[i.name]
                     if colide(CLEAR_BUTTON, event.pos):
                         # Reset all boats
-                        P1_LIST = [
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0]]
-                        for i in LIST_SHIP:
-                            i.clicked = False
-                            clickedship = ""
-                            if i.axe == "y":
-                                i.image = pygame.transform.rotate(i.image, 90)
-                            i.axe = "x"
-                            i.set_pos(i.default_pos[0], i.default_pos[1])
-                            if i.name in SHIP_COORD_P1.keys():
-                                del SHIP_COORD_P1[i.name]
+                        P1_LIST, clickedship = cleargride(P1_LIST, LIST_SHIP, SHIP_COORD_P1)
                     elif colide(RANDOM_BUTTON, event.pos):
                         # Randomise boat position
-                        P1_LIST = [
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0],
-                        [0,0,0,0,0,0,0,0,0,0]]
-                        for i in LIST_SHIP:
-                            i.clicked = False
-                            clickedship = ""
-                            if i.axe == "y":
-                                i.image = pygame.transform.rotate(i.image, 90)
-                            i.axe = "x"
-                            i.set_pos(i.default_pos[0], i.default_pos[1])
-                            if i.name in SHIP_COORD_P1.keys():
-                                del SHIP_COORD_P1[i.name]
+                        P1_LIST, clickedship = cleargride(P1_LIST, LIST_SHIP, SHIP_COORD_P1)
                         returnedcoords = generatecoord(P1_LIST)
                         random_coords = returnedcoords[0]
                         for i in returnedcoords[1]:
@@ -469,6 +435,11 @@ while RUNNING:
                     if pass_stats:
                         pass_stats = False
                         stats = 3
+                elif stats == 6:
+                    if colide(REPLAY_BUTTON, event.pos):
+                        difficulty = 0
+                        P1_LIST, clickedship = cleargride(P1_LIST, LIST_SHIP, SHIP_COORD_P1)
+                        stats = 0
             elif event.button == 2: # Wheel button
                 if stats == 1:
                     if clickedship !=  "":

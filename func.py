@@ -1,3 +1,4 @@
+import pygame
 import random
 
 def generatecoord(grid):
@@ -16,7 +17,7 @@ def generatecoord(grid):
     return SHIP_COORD, SHIP_AXE
 
 def aishoot(shotsmade, touchedshots, list_pos, diff):
-    if len(shotsmade)!=0  and len(touchedshots)/len(shotsmade) < 0.25 and diff > 1:
+    if len(shotsmade)!=0  and len(touchedshots)/len(shotsmade) < 0.30 and diff > 1:
         possible_shoots = []
         for i in list_pos.keys():
             for y in list_pos[i]:
@@ -98,3 +99,26 @@ def placable(coord_list, grid_list):
                     if grid_list[i[1]+y-1][i[0]+x-1] != 0:
                         return False
     return True
+
+def cleargride(playerlist, listship, shipcoord):
+    playerlist = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    for i in listship:
+        i.clicked = False
+        clickedship = ""
+        if i.axe == "y":
+            i.image = pygame.transform.rotate(i.image, 90)
+        i.axe = "x"
+        i.set_pos(i.default_pos[0], i.default_pos[1])
+        if i.name in shipcoord.keys():
+            del shipcoord[i.name]
+    return playerlist, clickedship
