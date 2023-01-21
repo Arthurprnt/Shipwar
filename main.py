@@ -88,30 +88,21 @@ while RUNNING:
         SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
         SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
         showtext(SCREEN, "Au tour du Joueur1 de jouer.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
-        for i in EMPTY_CASE:
-            SCREEN.blit(i.image, i.position)
-        for i in TOUCHED_CASE:
-            SCREEN.blit(i.image, i.position)
+        updatecases(EMPTY_CASE, TOUCHED_CASE, SCREEN)
     elif stats == 3:
         SCREEN.blit(GRID_P1.image, GRID_P1.position)
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
         SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
         SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
         showtext(SCREEN, txt, FONT, X//2, pixelinhd(170, X), (0, 0, 0))
-        for i in EMPTY_CASE:
-            SCREEN.blit(i.image, i.position)
-        for i in TOUCHED_CASE:
-            SCREEN.blit(i.image, i.position)
+        updatecases(EMPTY_CASE, TOUCHED_CASE, SCREEN)
     elif stats == 4:
         SCREEN.blit(GRID_P1.image, GRID_P1.position)
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
         SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
         SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
         showtext(SCREEN, "Au tour de l'ia de jouer.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
-        for i in EMPTY_CASE:
-            SCREEN.blit(i.image, i.position)
-        for i in TOUCHED_CASE:
-            SCREEN.blit(i.image, i.position)
+        updatecases(EMPTY_CASE, TOUCHED_CASE, SCREEN)
         response = aishoot(IA_SHOOTS, COORD_TOUCHED_CASE_P1, SHIP_COORD_P1, difficulty)
         IA_SHOOTS.append(response)
         nb_x = response[0]
@@ -129,17 +120,11 @@ while RUNNING:
                     if ii == (nb_x, nb_y):
                         case_exist = True
             if case_exist:
-                txt = "touché"
-                TOUCHED_CASE.append(Pygameimage("Something case", "assets/something_touched.png"))
-                TOUCHED_CASE[-1].multiplesize(1.5, X)
-                TOUCHED_CASE[-1].set_defaultpos(x1, y1)
-                COORD_TOUCHED_CASE_P1.append((nb_x, nb_y))
+                txt = checkshipstats(SHIP_COORD_P1, (nb_x, nb_y))
+                addcase(TOUCHED_CASE, COORD_TOUCHED_CASE_P1, Pygameimage("Something case", "assets/something_touched.png"), x1, y1, nb_x, nb_y)
             else:
                 txt = "loupé"
-                EMPTY_CASE.append(Pygameimage("Empty case", "assets/nothing_touched.png"))
-                EMPTY_CASE[-1].multiplesize(1.5, X)
-                EMPTY_CASE[-1].set_defaultpos(x1, y1)
-                COORD_EMPTY_CASE_P1.append((nb_x, nb_y))
+                addcase(EMPTY_CASE, COORD_EMPTY_CASE_P1, Pygameimage("Empty case", "assets/nothing_touched.png"), x1, y1, nb_x, nb_y)
             if 2+2*3+4+5 == len(COORD_TOUCHED_CASE_P1):
                 winner = "l'ia"
                 stats = 6
@@ -150,11 +135,8 @@ while RUNNING:
         SCREEN.blit(GRID_P2.image, GRID_P2.position)
         SCREEN.blit(PLAYER1_LOGO.image, PLAYER1_LOGO.position)
         SCREEN.blit(PLAYER2_LOGO.image, PLAYER2_LOGO.position)
-        showtext(SCREEN, f"L'ia a {txt} son tire.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
-        for i in EMPTY_CASE:
-            SCREEN.blit(i.image, i.position)
-        for i in TOUCHED_CASE:
-            SCREEN.blit(i.image, i.position)
+        showtext(SCREEN, f"L'ia a {txt} un bateau.", FONT, X//2, pixelinhd(170, X), (0, 0, 0))
+        updatecases(EMPTY_CASE, TOUCHED_CASE, SCREEN)
     elif stats == 6:
         showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2-pixelinhd(Y/28, X), (0, 0, 0))
         SCREEN.blit(REPLAY_BUTTON.image, REPLAY_BUTTON.position)
@@ -298,17 +280,12 @@ while RUNNING:
                                     if ii == (nb_x, nb_y):
                                         case_exist = True
                             if not((nb_x, nb_y) in COORD_EMPTY_CASE_P2+COORD_TOUCHED_CASE_P2) and case_exist:
-                                TOUCHED_CASE.append(Pygameimage("Something case", "assets/something_touched.png"))
-                                TOUCHED_CASE[-1].multiplesize(1.5, X)
-                                TOUCHED_CASE[-1].set_defaultpos(x1, y1)
-                                COORD_TOUCHED_CASE_P2.append((nb_x, nb_y))
-                                txt = "Touché !"
+                                addcase(TOUCHED_CASE, COORD_TOUCHED_CASE_P2, Pygameimage("Something case", "assets/something_touched.png"), x1, y1, nb_x, nb_y)
+                                txt = checkshipstats(SHIP_COORD_P2, (nb_x, nb_y))
+                                txt = txt[0].upper() + txt[1:] + " !"
                                 pass_stats = True
                             elif not((nb_x, nb_y) in COORD_EMPTY_CASE_P2+COORD_TOUCHED_CASE_P2):
-                                EMPTY_CASE.append(Pygameimage("Empty case", "assets/nothing_touched.png"))
-                                EMPTY_CASE[-1].multiplesize(1.5, X)
-                                EMPTY_CASE[-1].set_defaultpos(x1, y1)
-                                COORD_EMPTY_CASE_P2.append((nb_x, nb_y))
+                                addcase(EMPTY_CASE, COORD_EMPTY_CASE_P2, Pygameimage("Empty case", "assets/nothing_touched.png"), x1, y1, nb_x, nb_y)
                                 txt = "Loupé !"
                                 pass_stats = True
                     if pass_stats:
