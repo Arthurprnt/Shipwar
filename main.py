@@ -294,11 +294,21 @@ while RUNNING:
                 elif stats == 6:
                     if colide(REPLAY_BUTTON, event.pos):
                         difficulty = 0
-                        P1_LIST, clickedship = cleargride(P1_LIST, LIST_SHIP, SHIP_COORD_P1)
                         stats = 0
+                        P1_LIST, clickedship = cleargride(P1_LIST, LIST_SHIP, SHIP_COORD_P1)
+                        P2_LIST, clickedship = cleargride(P2_LIST, LIST_SHIP, SHIP_COORD_P2)
+                        IA_SHOOTS = []
+                        EMPTY_CASE = []
+                        COORD_EMPTY_CASE_P1 = []
+                        COORD_TOUCHED_CASE_P1 = []
+                        TOUCHED_CASE = []
+                        COORD_EMPTY_CASE_P2 = []
+                        COORD_TOUCHED_CASE_P2 = []
+                        SHIP_COORD_P1 = {}
+                        SHIP_COORD_P2 = {}
             elif event.button == 2: # Wheel button
                 if stats == 1:
-                    if clickedship !=  "":
+                    if clickedship != "":
                         if SHIPS_LIST[clickedship].axe == "x":
                             SHIPS_LIST[clickedship].axe = "y"
                         else:
