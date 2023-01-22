@@ -1,16 +1,8 @@
-from betterpygame import *
-import pygame
 from func import *
 from imports import *
 pygame.init()
 
 DEBUG = False
-
-"""
-0: No shot made
-1: Shot here but no ship
-2: Shot here and ship
-"""
 
 RUNNING = True
 pass_stats = False
@@ -50,6 +42,7 @@ while RUNNING:
             showtext(SCREEN, str(i), FONT2, pixelinhd(200, X), y, (0, 0, 0))
             y = y+pixelinhd(22, X)
 
+    # Display every sprite needed per stats of the game
     if stats == 0:
         SCREEN.blit(LOGO_MENU.image, LOGO_MENU.position)
         SCREEN.blit(PLAY_BUTTON.image, PLAY_BUTTON.position)
@@ -141,6 +134,7 @@ while RUNNING:
         showtext(SCREEN, f"Le gagnant de match est {winner} !", FONT, X//2, Y//2-pixelinhd(Y/28, X), (0, 0, 0))
         SCREEN.blit(REPLAY_BUTTON.image, REPLAY_BUTTON.position)
 
+    # Check the event made by the user
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             RUNNING = False
@@ -161,6 +155,7 @@ while RUNNING:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == pygame.BUTTON_LEFT:
                 if stats == 0:
+                    # Change the difficulty
                     if colide(BUTTON_FACILE, event.pos):
                         difficulty = difficulty + 1
                         if difficulty == 3:
@@ -196,7 +191,7 @@ while RUNNING:
                                     P1_LIST[y[1]-1][y[0]-1] = 0
                             i.clicked = True
                             clickedship = i.name
-                        elif i.clicked and colide(MAIN_GRID, event.pos) and i.position[0]+i.size[0] < MAIN_GRID.position[0]+MAIN_GRID.size[0] and i.position[1]+i.size[1] < MAIN_GRID.position[1]+MAIN_GRID.size[1]:
+                        elif i.clicked and colide(MAIN_GRID, event.pos) and i.position[0]+i.getimagesize()[0] <= MAIN_GRID.position[0]+MAIN_GRID.getimagesize()[0] and i.position[1]+i.getimagesize()[1] <= MAIN_GRID.position[1]+MAIN_GRID.getimagesize()[1]:
                             # Ship is placed
                             i.clicked = False
                             clickedship = ""
@@ -221,12 +216,14 @@ while RUNNING:
                                     SHIP_COORD_P1[i.name].append((nb_x, nb_y))
                                     nb_y = nb_y + 1
                             if not(placable(SHIP_COORD_P1[i.name], P1_LIST)) or i.position[1] == 270:
+                                # But the ship is not placable
                                 del SHIP_COORD_P1[i.name]
                                 i.clicked = True
                             else:
                                 for iii in SHIP_COORD_P1[i.name]:
                                     P1_LIST[iii[1]-1][iii[0]-1] = 1
                         elif colide(i, event.pos):
+                            # Reset the position of the ship
                             i.clicked = False
                             clickedship = ""
                             if i.axe == "y":
@@ -306,7 +303,8 @@ while RUNNING:
                         COORD_TOUCHED_CASE_P2 = []
                         SHIP_COORD_P1 = {}
                         SHIP_COORD_P2 = {}
-            elif event.button == 2: # Wheel button
+            # Wheel button to rotate the clicked ship
+            elif event.button == 2:
                 if stats == 1:
                     if clickedship != "":
                         if SHIPS_LIST[clickedship].axe == "x":

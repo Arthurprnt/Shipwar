@@ -3,12 +3,18 @@ import random
 from imports import *
 
 def addcase(caselist, coordcaselist, image, x, y, nb_x, nb_y):
+    """
+    Add a case to the list of cases that need to be display every loop execution
+    """
     caselist.append(image)
     caselist[-1].multiplesize(1.5, X)
     caselist[-1].set_defaultpos(x, y)
     coordcaselist.append((nb_x, nb_y))
 
 def aishoot(shotsmade, touchedshots, list_pos, diff):
+    """
+    Return a case to be shoot choosed by the ia
+    """
     if len(shotsmade)!=0  and len(touchedshots)/len(shotsmade) < 0.30 and diff > 1:
         possible_shoots = []
         for i in list_pos.keys():
@@ -51,6 +57,9 @@ def aishoot(shotsmade, touchedshots, list_pos, diff):
     return (x, y)
 
 def checkshipstats(listshipcoord, touchedcoord):
+    """
+    Check if the ship is just touched or if it's totally sunk
+    """
     txt = "touché"
     for ship in listshipcoord:
         for coord in listshipcoord[ship]:
@@ -61,6 +70,9 @@ def checkshipstats(listshipcoord, touchedcoord):
     return txt
 
 def cleargride(playerlist, listship, shipcoord):
+    """
+    Reset a grid and the list of ship's coord
+    """
     playerlist = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -84,6 +96,9 @@ def cleargride(playerlist, listship, shipcoord):
     return playerlist, clickedship
 
 def createshipcoord(size):
+    """
+    Return random coord for a ship
+    """
     facing = random.randint(1, 2)
     if facing == 1:
         x = random.randint(1, 10-size)
@@ -104,6 +119,9 @@ def createshipcoord(size):
     return coorlist, axe
 
 def generatecoord(grid):
+    """
+    Return the list of all the coord of the ships
+    """
     SHIP_COORD = {}
     SHIP_AXE = {}
     # First ship: 5x1
@@ -119,6 +137,9 @@ def generatecoord(grid):
     return SHIP_COORD, SHIP_AXE
 
 def placable(coord_list, grid_list):
+    """
+    Check if the ship can be place on the grid
+    """
     for i in coord_list:
         if grid_list[i[1]-1][i[0]-1] != 0:
             return False
@@ -130,6 +151,9 @@ def placable(coord_list, grid_list):
     return True
 
 def placeboat(shipscoord, name, thegrid, size):
+    """
+    Place a ship on a grid
+    """
     isplacable = False
     while not isplacable:
         returnedvalues = createshipcoord(size)
@@ -141,6 +165,9 @@ def placeboat(shipscoord, name, thegrid, size):
     return returnedvalues[1]
 
 def updatecases(emptycase, touchedcase, screen):
+    """
+    Display every cases generated
+    """
     for i in emptycase:
         screen.blit(i.image, i.position)
     for i in touchedcase:
